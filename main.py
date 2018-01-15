@@ -19,14 +19,6 @@ import web_scraping_beer_and_cider as beer_and_cider
 now = datetime.datetime.now()
 today = str(now.strftime("%Y-%m-%d"))
 
-for e in ['red_wine','white_wine','sparkling','spirit',
-          'premixed','beer_and_cider']:    
-    old_csv = glob.glob('*{}.csv'.format(e))[0]
-    print(old_csv)
-    df = pd.read_csv(old_csv, index_col = 'product_name')
-    df_updated = pd.concat([df, different_df_new(e)], axis = 1)
-    df_updated.to_csv('{}.csv'.format(today + '_' + e))
-
 def different_df_new(product_type):
     return {'red_wine': red_wine.df_new,
             'white_wine': white_wine.df_new,
@@ -35,4 +27,14 @@ def different_df_new(product_type):
             'premixed': premixed.df_new,
             'beer_and_cider': beer_and_cider.df_new
             }[product_type]
+    
+for e in ['red_wine','white_wine','sparkling','spirit',
+          'premixed','beer_and_cider']:    
+    old_csv = glob.glob('*{}.csv'.format(e))[0]
+    print(old_csv)
+    df = pd.read_csv(old_csv, index_col = 'product_name')
+    df_updated = pd.concat([df, different_df_new(e)], axis = 1)
+    df_updated.to_csv('{}.csv'.format(today + '_' + e))
+
+
 
