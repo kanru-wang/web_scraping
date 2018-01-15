@@ -6,33 +6,33 @@ Created on Sat Jan 13 20:41:17 2018
 """
 
 import glob
-import csv
 import pandas as pd
+import datetime
 import web_scraping_red_wine as red_wine
+import web_scraping_white_wine as white_wine
+import web_scraping_sparkling_wine as sparkling
+import web_scraping_spirit_wine as spirit
+import web_scraping_premixed as premixed
+import web_scraping_beer_and_cider as beer_and_cider
 
-#for e in ['red_wine','white_wine','sparkling','spirit',
-#          'pre-mixed','beer_and_cider']:    
-old_csv = glob.glob('*red_wine.csv')[0]
-print(old_csv)
+# "today" is a part of the csv file name.
+now = datetime.datetime.now()
+today = str(now.strftime("%Y-%m-%d"))
 
-df = pd.read_csv(old_csv, index_col = 'product_name')
+for e in ['red_wine','white_wine','sparkling','spirit',
+          'premixed','beer_and_cider']:    
+    old_csv = glob.glob('*{}.csv'.format(e))[0]
+    print(old_csv)
+    df = pd.read_csv(old_csv, index_col = 'product_name')
+    df_updated = pd.concat([df, different_df_new(e)], axis = 1)
+    df_updated.to_csv('{}.csv'.format(today + '_' + e))
 
-df_updated = pd.concat([df, red_wine.df_new], axis = 1)
+def different_df_new(product_type):
+    return {'red_wine': red_wine.df_new,
+            'white_wine': white_wine.df_new,
+            'sparkling': sparkling.df_new,
+            'spirit': spirit.df_new,
+            'premixed': premixed.df_new,
+            'beer_and_cider': beer_and_cider.df_new
+            }[product_type]
 
-#with open (old_csv, 'r') as csv_file:
-#    csv_reader = csv.reader(csv_file)
-#    for line in csv_reader:
-#        print(line)
-
-## "today" is the col name of the new col to be added to the existing df.
-#now = datetime.datetime.now()
-#today = str(now.strftime("%Y-%m-%d"))
-#
-#csv_file = open('{}.csv'.format(today), 'w', newline = '') 
-#
-#csv_writer = csv.writer(csv_file)
-#csv_writer.writerow(['product_name', today])
-#
-#
-#
-#csv_file.close()
