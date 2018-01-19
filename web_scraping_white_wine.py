@@ -70,14 +70,19 @@ def extract(soup, df_new):
         translationTable = str.maketrans("áàâäçéëèêÎîñöôóúûù",
                                          "aaaaceeeeiinooouuu")
         product_name = product_name.translate(translationTable)
+
+        # Get a list of prices of different package sizes of this product.
+        # Choose the lowest price.
+        price_list = [x.text for x in 
+                      product.find_all('span',{'class':'price'})]
+        price_list_without_dollar = [x.replace('$','') for x in price_list]
+        # To deal with some items that have no price displayed.
         try:
-            price = product.find_all('li', {'class':'price-secondary'})[0]\
-                    .p.span.text
-        except IndexError:
-            price = product.find_all('span',{'class':'price'})[0].text
-        price = price.replace('$','')
+            min_price = min([float(x) for x in price_list_without_dollar])
+        except ValueError:
+            min_price = float('nan')
         
-        df_new.loc[product_name] = price
+        df_new.loc[product_name] = min_price
     
     return df_new 
 
