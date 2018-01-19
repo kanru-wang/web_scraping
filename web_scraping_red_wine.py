@@ -69,7 +69,8 @@ def extract(soup, df_new):
                                  {'class':'independent-product-module'}):
         product_name = product.div.h2.a['title']
         # Replace Frech letters with English
-        translationTable = str.maketrans("éëàèùâêîôóûç", "eeaeuaeioouc")
+        translationTable = str.maketrans("áàâäçéëèêÎîñöôóúûù",
+                                         "aaaaceeeeiinooouuu")
         product_name = product_name.translate(translationTable)
         try:
             price = product.find_all('li', {'class':'price-secondary'})[0]\
