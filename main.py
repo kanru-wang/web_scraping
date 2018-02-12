@@ -27,7 +27,7 @@ product_dict =  {'red_wine': red_wine.df_new,
                  'beer_and_cider': beer_and_cider.df_new
                  }
 
-#df_lowest_price = pd.DataFrame()
+df_lowest_price = pd.DataFrame()
 
 def checkIfLowest(row):
     # If this week's price is lower than the previous, say, 12 week's prices,
@@ -40,9 +40,10 @@ def checkIfLowest(row):
     # Shouldn't be (row[-1] <= row[-13:-1]), since many products never change.
     
     if sum(row[-1] < row[-13:-1]) > 5: #Should be > 12
-        #return row
-        print(row)
-    
+        global df_lowest_price 
+        df_lowest_price = pd.concat([df_lowest_price, row.to_frame().T], 
+                                     axis = 0)
+        
 for e in ['red_wine','white_wine','sparkling','spirit',
           'premixed','beer_and_cider']:    
     old_csv = glob.glob('*{}.csv'.format(e))[0]
@@ -51,8 +52,6 @@ for e in ['red_wine','white_wine','sparkling','spirit',
     df_updated = pd.concat([df, product_dict[e]], axis = 1)
     df_updated.to_csv('{}.csv'.format(today + '_' + e))
 
-    df_lowest_price_this_type = df_updated.apply(checkIfLowest, axis = 1)#.dropna()
-    #df_lowest_price = pd.concat([df_lowest_price, df_lowest_price_this_type], 
-    #                            axis = 0)
+    df_updated.apply(checkIfLowest, axis = 1)
 
-#df_lowest_price.to_csv('{}.csv'.format(today + '_' + 'lowest_price'))
+df_lowest_price.to_csv('{}.csv'.format(today + '_' + 'lowest_price'))
