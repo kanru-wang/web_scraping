@@ -39,10 +39,8 @@ def checkIfLowest(row):
     
     # Shouldn't be (row[-1] <= row[-13:-1]), since many products never change.
     
-    if sum(row[-1] < row[-13:-1]) > 5: #Should be > 12
-        global df_lowest_price 
-        df_lowest_price = pd.concat([df_lowest_price, row.to_frame().T], 
-                                     axis = 0)
+    if sum(row[-1] < row[-13:-1]) > 4: #Should be > 12
+        return row.to_frame().T
         
 for e in ['red_wine','white_wine','sparkling','spirit',
           'premixed','beer_and_cider']:    
@@ -52,6 +50,11 @@ for e in ['red_wine','white_wine','sparkling','spirit',
     df_updated = pd.concat([df, product_dict[e]], axis = 1)
     df_updated.to_csv('{}.csv'.format(today + '_' + e))
 
-    df_updated.apply(checkIfLowest, axis = 1)
+    series_of_dfs = df_updated.apply(checkIfLowest,
+                                   axis = 1, 
+                                   reduce = False).dropna()
+    df_lowest_price_this_type = pd.concat(series_of_dfs.tolist(), axis = 0)
+    df_lowest_price = pd.concat([df_lowest_price,
+                                 df_lowest_price_this_type], axis = 0)
 
 df_lowest_price.to_csv('{}.csv'.format(today + '_' + 'lowest_price'))
