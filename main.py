@@ -39,7 +39,7 @@ def checkIfLowest(row):
     
     # Shouldn't be (row[-1] <= row[-13:-1]), since many products never change.
     
-    if sum(row[-1] < row[-13:-1]) > 6: #Should be > 12
+    if sum(row[-1] < row[-13:-1]) > 8: #Should be > 12
         return row.to_frame().T
         
 for e in ['red_wine','white_wine','sparkling','spirit',
@@ -58,8 +58,13 @@ for e in ['red_wine','white_wine','sparkling','spirit',
                                    reduce = False).dropna()
     # tolist() is here because concat() needs an iterable object,
     # series_of_dfs is a pandas.series and is not iterable.
-    df_lowest_price_this_type = pd.concat(series_of_dfs.tolist(), axis = 0)
-    df_lowest_price = pd.concat([df_lowest_price,
-                                 df_lowest_price_this_type], axis = 0)
+    try:
+        df_lowest_price_this_type = pd.concat(series_of_dfs.tolist(), axis = 0)
+    except ValueError as errorMsg:
+        print(errorMsg)
+        print("Probably because no low price in " + e + " this week.")
+    else:
+        df_lowest_price = pd.concat([df_lowest_price,
+                                     df_lowest_price_this_type], axis = 0)
 
 df_lowest_price.to_csv('{}.csv'.format(today + '_' + 'lowest_price'))
