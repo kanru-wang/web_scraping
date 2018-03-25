@@ -82,8 +82,8 @@ def extract(soup, df_new):
                                  {'class':'independent-product-module'}):
         product_name = product.div.h2.a['title']
         # Replace Frech letters with English
-        translationTable = str.maketrans("áàâäçéëèêÎîñöôóúûù",
-                                         "aaaaceeeeiinooouuu")
+        translationTable = str.maketrans("áàâäçéëèêÎîñöôóúûùü",
+                                         "aaaaceeeeiinooouuuu")
         product_name = product_name.translate(translationTable)
         
         # Get a list of prices of different package sizes of this product.

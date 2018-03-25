@@ -39,7 +39,7 @@ def checkIfLowest(row):
     
     # Shouldn't be (row[-1] <= row[-13:-1]), since many products never change.
     
-    if sum(row[-1] < row[-13:-1]) > 8: #Should be > 12
+    if sum(row[-1] < row[-13:-1]) > 9: #Should be > 12
         return row.to_frame().T
         
 for e in ['red_wine','white_wine','sparkling','spirit',
